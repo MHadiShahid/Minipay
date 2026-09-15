@@ -1,0 +1,5 @@
+/private_evaluator/
+__pycache__/
+*.pyc
+.env
+database/seed.sql
