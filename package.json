@@ -1,0 +1,29 @@
+{
+  "name": "paysys-l2-solution",
+  "version": "1.0.0",
+  "description": "**Time window:** Submit within 48 hours of receiving the assessment.   **Expected hands-on effort:** Approximately 6–10 hours.   **Submission:** Public GitHub repository.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test:ui": "playwright test",
+    "test:ui:headed": "playwright test --headed",
+    "test:ui:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MHadiShahid/paysys-implementation-l2-assessment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MHadiShahid/paysys-implementation-l2-assessment/issues"
+  },
+  "homepage": "https://github.com/MHadiShahid/paysys-implementation-l2-assessment#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
