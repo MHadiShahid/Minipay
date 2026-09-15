@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .database import get_connection
@@ -14,6 +15,13 @@ from .schemas import CustomerCreate, PaymentCreate
 
 app = FastAPI(title="MiniPay API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def transaction_to_dict(row):
     return {

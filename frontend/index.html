@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniPay Support Console</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>MiniPay Support Console</h1>
+            <p>Customer and payment troubleshooting</p>
+        </div>
+        <span id="api-status" data-testid="api-status">Checking API...</span>
+    </header>
+
+    <main class="container">
+
+        <!-- Customer Lookup -->
+        <section class="card">
+            <h2>Customer Lookup</h2>
+
+            <form id="customer-form">
+                <label for="customer-id">Customer ID</label>
+
+                <div class="form-row">
+                    <input
+                        id="customer-id"
+                        data-testid="customer-id"
+                        type="number"
+                        min="1"
+                        placeholder="Enter customer ID"
+                        required
+                    >
+                    <button
+                        type="submit"
+                        data-testid="customer-search"
+                    >
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <div
+                id="customer-result"
+                data-testid="customer-result"
+                class="result hidden"
+            ></div>
+        </section>
+
+        <!-- Create Payment -->
+        <section class="card">
+            <h2>Create Payment</h2>
+
+            <form id="payment-form">
+                <label for="transaction-ref">Transaction Reference</label>
+                <input
+                    id="transaction-ref"
+                    data-testid="transaction-ref"
+                    type="text"
+                    placeholder="e.g. TXN-TEST-001"
+                    required
+                >
+
+                <label for="payment-customer-id">Customer ID</label>
+                <input
+                    id="payment-customer-id"
+                    data-testid="payment-customer-id"
+                    type="number"
+                    min="1"
+                    placeholder="Customer ID"
+                    required
+                >
+
+                <label for="payment-amount">Amount</label>
+                <input
+                    id="payment-amount"
+                    data-testid="payment-amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="100.00"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    data-testid="create-payment"
+                >
+                    Create Payment
+                </button>
+            </form>
+
+            <div
+                id="payment-result"
+                data-testid="payment-result"
+                class="result hidden"
+            ></div>
+        </section>
+
+        <!-- Payment Lookup -->
+        <section class="card">
+            <h2>Payment Lookup</h2>
+
+            <form id="payment-lookup-form">
+                <label for="payment-id">Payment ID</label>
+
+                <div class="form-row">
+                    <input
+                        id="payment-id"
+                        data-testid="payment-id"
+                        type="number"
+                        min="1"
+                        placeholder="Enter payment ID"
+                        required
+                    >
+                    <button
+                        type="submit"
+                        data-testid="payment-search"
+                    >
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <div
+                id="payment-lookup-result"
+                data-testid="payment-lookup-result"
+                class="result hidden"
+            ></div>
+        </section>
+
+        <!-- Customer Payments -->
+        <section class="card">
+            <h2>Customer Payments</h2>
+
+            <form id="customer-payments-form">
+                <label for="payments-customer-id">Customer ID</label>
+
+                <div class="form-row">
+                    <input
+                        id="payments-customer-id"
+                        data-testid="payments-customer-id"
+                        type="number"
+                        min="1"
+                        placeholder="Enter customer ID"
+                        required
+                    >
+                    <button
+                        type="submit"
+                        data-testid="payments-search"
+                    >
+                        View Payments
+                    </button>
+                </div>
+            </form>
+
+            <div
+                id="payments-result"
+                data-testid="payments-result"
+                class="result hidden"
+            ></div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
