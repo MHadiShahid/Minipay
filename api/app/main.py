@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from .database import get_connection
@@ -145,24 +146,34 @@ def create_payment(payment: PaymentCreate):
                     existing_customer_id = existing[2]
                     existing_amount = existing[3]
 
-                if (
-                    existing_customer_id == payment.customer_id
-                    and existing_amount == payment.amount
-                ):
+                    if (
+                        existing_customer_id == payment.customer_id
+                        and existing_amount == payment.amount
+                    ):
+                        connection.rollback()
+                        return transaction_to_dict(existing)
+
                     connection.rollback()
-                    return transaction_to_dict(existing)
+                    raise HTTPException(
+                        status_code=409,
+                        detail="Transaction reference already exists with different payment details"
+                    )
 
-                connection.rollback()
-                raise HTTPException(
-                    status_code=409,
-                    detail="Transaction reference already exists with different payment details"
+                cursor.execute(
+                    CREATE_PAYMENT,
+                    (
+                        payment.transaction_ref,
+                        payment.customer_id,
+                        payment.amount
+                    )
                 )
+                row = cursor.fetchone()
 
-            connection.commit()
+                connection.commit()
 
         return JSONResponse(
             status_code=201,
-            content=transaction_to_dict(row)
+            content=jsonable_encoder(transaction_to_dict(row))
         )
 
     except HTTPException:
