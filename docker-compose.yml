@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: minipay-postgres-compose
+    environment:
+      POSTGRES_DB: minipay
+      POSTGRES_USER: minipay
+      POSTGRES_PASSWORD: minipay123
+    ports:
+      - "5432:5432"
+    volumes:
+      - minipay-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minipay -d minipay"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+    container_name: minipay-api-compose
+    environment:
+      DATABASE_URL: postgresql://minipay:minipay123@postgres:5432/minipay
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  minipay-postgres-data:
+    external: true
