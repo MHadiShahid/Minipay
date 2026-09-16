@@ -23,6 +23,7 @@ SELECT
     failure_code
 FROM transactions
 WHERE transaction_ref = 'TXN00012345';
+
 Before Index
 
 The query used a sequential scan:
@@ -51,11 +52,12 @@ Index Scan using idx_transactions_transaction_ref on transactions
 Buffers: shared hit=1 read=2
 Execution Time: 0.102 ms
 Before vs After
-Metric	                      Before	                After
-Access method	              Sequential Scan	        Index Scan
-Rows removed by filter	      49,999	                0
-Buffers	                      616	                3
-Execution time	              10.225 ms           	0.102 ms
+| Metric                 | Before          | After                          |
+|---                     |---:             |---:                            |
+| Access method          | Sequential Scan | Index Scan                     |
+| Rows removed by filter | 49,999          | Not applicable to index lookup |
+| Buffers                | 616             | 3                              |
+| Execution time         | 10.225 ms       | 0.102 ms                       |
 
 The measured execution time decreased from 10.225 ms to 0.102 ms, approximately a 100x improvement for this test query.
 
