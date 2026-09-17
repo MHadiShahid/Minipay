@@ -49,11 +49,11 @@ Health check:
 
 Example:
 
-    python python/support_tool.py --transaction TXN000123
+    python python/support_tool.py --transaction TXN00000001
 
 JSON output:
 
-    python python/support_tool.py --transaction TXN000123 --json
+    python python/support_tool.py --transaction TXN00000001 --json
 
 Run Python tests:
 
