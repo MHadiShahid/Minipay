@@ -69,6 +69,8 @@ The final test suite was executed with:
 ```text
 pytest -v
 
+```
+
 and completed with:
 
 20 passed
