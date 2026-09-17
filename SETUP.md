@@ -74,7 +74,7 @@ pytest -v
 
 1. **Build the API image:**
 ```bash
-docker build -t minipay-api:1.0 .
+docker build -t minipay-api:1.0 api .
 
 ```
 
