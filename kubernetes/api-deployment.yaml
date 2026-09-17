@@ -30,6 +30,11 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
               value: postgresql://minipay:$(POSTGRES_PASSWORD)@postgres:5432/minipay
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: API_KEY
 
           envFrom:
             - configMapRef:

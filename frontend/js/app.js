@@ -1,7 +1,19 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
+const API_KEY = "minipay-test-key";
 
 async function apiRequest(path, options = {}) {
-    const response = await fetch(`${API_BASE_URL}${path}`, options);
+    const requestOptions = {
+        ...options,
+        headers: {
+            ...(options.headers || {}),
+            "X-API-Key": API_KEY
+        }
+    };
+
+    const response = await fetch(
+        `${API_BASE_URL}${path}`,
+        requestOptions
+    );
 
     let data = null;
 

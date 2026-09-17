@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException
+import os
+
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,6 +16,16 @@ from .queries import (
 from .schemas import CustomerCreate, PaymentCreate
 
 app = FastAPI(title="MiniPay API")
+
+API_KEY = os.getenv("API_KEY")
+
+
+def require_api_key(x_api_key: str | None = Header(default=None)):
+    if not API_KEY or x_api_key != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing API key"
+        )
 
 app.add_middleware(
     CORSMiddleware,
@@ -56,7 +68,7 @@ def health_check():
         }
 
 
-@app.post("/api/customers", status_code=201)
+@app.post("/api/customers", status_code=201, dependencies=[Depends(require_api_key)])
 def create_customer(customer: CustomerCreate):
     try:
         with get_connection() as connection:
@@ -89,7 +101,7 @@ def create_customer(customer: CustomerCreate):
         )
 
 
-@app.get("/api/customers/{customer_id}")
+@app.get("/api/customers/{customer_id}", dependencies=[Depends(require_api_key)])
 def get_customer(customer_id: int):
     with get_connection() as connection:
         with connection.cursor() as cursor:
@@ -110,7 +122,7 @@ def get_customer(customer_id: int):
     }
 
 
-@app.post("/api/payments")
+@app.post("/api/payments", dependencies=[Depends(require_api_key)])
 def create_payment(payment: PaymentCreate):
     try:
         with get_connection() as connection:
@@ -194,7 +206,7 @@ def create_payment(payment: PaymentCreate):
         )
 
 
-@app.get("/api/payments/{payment_id}")
+@app.get("/api/payments/{payment_id}", dependencies=[Depends(require_api_key)])
 def get_payment(payment_id: int):
     with get_connection() as connection:
         with connection.cursor() as cursor:
@@ -213,7 +225,7 @@ def get_payment(payment_id: int):
     return transaction_to_dict(row)
 
 
-@app.get("/api/customers/{customer_id}/payments")
+@app.get("/api/customers/{customer_id}/payments", dependencies=[Depends(require_api_key)])
 def get_customer_payments(customer_id: int):
     with get_connection() as connection:
         with connection.cursor() as cursor:

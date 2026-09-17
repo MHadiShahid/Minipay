@@ -5,6 +5,9 @@ import httpx
 
 BASE_URL = "http://127.0.0.1:8000"
 
+API_KEY = "minipay-test-key"
+HEADERS = {"X-API-Key": API_KEY}
+
 
 def test_health():
     response = httpx.get(f"{BASE_URL}/health")
@@ -13,9 +16,36 @@ def test_health():
     assert response.json()["status"] == "ok"
     assert response.json()["database"] == "connected"
 
+def test_protected_endpoint_requires_api_key():
+    response = httpx.get(
+        f"{BASE_URL}/api/customers/1"
+    )
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid or missing API key"
+
+
+def test_protected_endpoint_accepts_valid_api_key():
+    response = httpx.get(
+        f"{BASE_URL}/api/customers/1",
+        headers=HEADERS,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+
+
+def test_protected_endpoint_rejects_invalid_api_key():
+    response = httpx.get(
+        f"{BASE_URL}/api/customers/1",
+        headers={"X-API-Key": "wrong-key"},
+    )
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid or missing API key"
 
 def test_get_existing_customer():
-    response = httpx.get(f"{BASE_URL}/api/customers/1")
+    response = httpx.get(f"{BASE_URL}/api/customers/1",headers=HEADERS)
 
     assert response.status_code == 200
 
@@ -28,14 +58,14 @@ def test_get_existing_customer():
 
 
 def test_get_unknown_customer():
-    response = httpx.get(f"{BASE_URL}/api/customers/999999")
+    response = httpx.get(f"{BASE_URL}/api/customers/999999",headers=HEADERS)
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Customer not found"
 
 
 def test_get_unknown_payment():
-    response = httpx.get(f"{BASE_URL}/api/payments/999999")
+    response = httpx.get(f"{BASE_URL}/api/payments/999999",headers=HEADERS)
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Payment not found"
@@ -50,6 +80,7 @@ def test_create_customer():
             "customer_ref": customer_ref,
             "name": "API Test Customer",
         },
+        headers=HEADERS
     )
 
     assert response.status_code == 201
@@ -72,6 +103,7 @@ def test_create_payment():
             "customer_id": 1,
             "amount": 1000.50,
         },
+        headers=HEADERS
     )
 
     assert response.status_code == 201
@@ -94,6 +126,7 @@ def test_create_payment_unknown_customer():
             "customer_id": 999999,
             "amount": 1000.00,
         },
+        headers=HEADERS
     )
 
     assert response.status_code == 404
@@ -108,6 +141,7 @@ def test_create_payment_invalid_amount():
             "customer_id": 1,
             "amount": -100,
         },
+        headers=HEADERS
     )
 
     assert response.status_code == 422
@@ -120,6 +154,7 @@ def test_create_payment_missing_field():
             "transaction_ref": f"API-MISSING-{int(time.time())}",
             "customer_id": 1,
         },
+        headers=HEADERS
     )
 
     assert response.status_code == 422
@@ -137,6 +172,7 @@ def test_payment_idempotency():
     first_response = httpx.post(
         f"{BASE_URL}/api/payments",
         json=payload,
+        headers=HEADERS
     )
 
     assert first_response.status_code == 201
@@ -146,6 +182,7 @@ def test_payment_idempotency():
     second_response = httpx.post(
         f"{BASE_URL}/api/payments",
         json=payload,
+        headers=HEADERS
     )
 
     assert second_response.status_code == 200
@@ -167,6 +204,7 @@ def test_payment_conflicting_duplicate():
             "customer_id": 1,
             "amount": 500.00,
         },
+        headers=HEADERS
     )
 
     assert first_response.status_code == 201
@@ -178,6 +216,7 @@ def test_payment_conflicting_duplicate():
             "customer_id": 1,
             "amount": 600.00,
         },
+        headers=HEADERS
     )
 
     assert second_response.status_code == 409
@@ -189,7 +228,8 @@ def test_payment_conflicting_duplicate():
 
 def test_get_customer_payments():
     response = httpx.get(
-        f"{BASE_URL}/api/customers/1/payments"
+        f"{BASE_URL}/api/customers/1/payments",
+        headers=HEADERS
     )
 
     assert response.status_code == 200
@@ -200,7 +240,8 @@ def test_payment_response_time():
     start = time.perf_counter()
 
     response = httpx.get(
-        f"{BASE_URL}/api/payments/50006"
+        f"{BASE_URL}/api/payments/50006",
+        headers=HEADERS
     )
 
     elapsed = time.perf_counter() - start
