@@ -1,9 +1,3 @@
-The content of your setup guide is clear, comprehensive, and well-structured, but the layout is missing proper formatting (like code blocks, headers, and bullet points) to make it easy for an evaluator to read and follow.
-
-Here is the cleaned-up, properly formatted Markdown version ready to use:
-
----
-
 # MiniPay Setup Guide
 
 ### Prerequisites
