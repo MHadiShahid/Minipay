@@ -16,7 +16,6 @@ Install:
 
 From the repository root:
 
-```bash
 docker compose up -d
 
 Verify the API:
