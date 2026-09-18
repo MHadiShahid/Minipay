@@ -4,7 +4,6 @@ import logging
 import sys
 
 from config import load_config
-from db_client import get_transaction_data
 from diagnostics import analyze_transaction
 from db_client import check_database_health, get_transaction_data
 from health import check_api_health
